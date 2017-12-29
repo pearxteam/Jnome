@@ -11,9 +11,10 @@ import org.slf4j.LoggerFactory
 
 class Generator implements Plugin<Project>
 {
-    Logger log;
+    Logger log
+
     void apply(Project proj)
     {
-        log = LoggerFactory.getLogger("jnome-generator");
+        log = LoggerFactory.getLogger("jnome-generator")
     }
 }

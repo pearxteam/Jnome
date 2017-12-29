@@ -18,7 +18,7 @@ class StripTask extends DefaultTask
     @TaskAction
     def strip()
     {
-        new FileWriter(output.toString(), true).withCloseable { wr ->
+        new FileWriter(output.toString(), false).withCloseable { wr ->
             boolean pass = false
             input.eachLine { line ->
                 if(line.startsWith("# "))
