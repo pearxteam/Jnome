@@ -1,7 +1,7 @@
 rootProject.name = 'Jnome'
 
-/*include ":Jnome:Generator"
-project(":Jnome:Generator").projectDir = file("Generator")
-
+include ":Jnome:Generator"
+project(":Jnome:Generator").projectDir = file("buildSrc")
+/*
 include ":PearXLib2"
 project(":PearXLib2").projectDir = file("../PearXLib2")*/

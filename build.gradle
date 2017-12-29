@@ -1,16 +1,28 @@
 import groovy.json.JsonSlurper
+import ru.pearx.jnome.generator.tasks.StripTask
+
+/*buildscript {
+    repositories {
+        maven {
+            url uri('Generator/build/repo')
+        }
+    }
+    dependencies {
+        classpath project(':Jnome:Generator')
+    }
+}*/
 
 group 'ru.pearx.jnome'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
+apply plugin: "jnome-generator"
 
 sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
 }
-
 dependencies {
 
 }
@@ -22,6 +34,12 @@ sourceSets {
     }
 }
 
+File autogen = file("$buildDir/autogen")
+
+task mkdirs() {
+    autogen.mkdirs()
+}
+
 task preprocess(type: Exec) {
     setExecutable(gcc_executable)
     List<String> args = ["-E", "${preprocessing_input_file}"];
@@ -31,14 +49,19 @@ task preprocess(type: Exec) {
         args.add("-I")
         args.add("${s}")
     }
-    File dir = file("$buildDir/autogen")
-    dir.mkdirs()
     args.add("-o")
-    args.add("$dir/out.h")
+    args.add("$autogen/preprocessed.h")
     setArgs(args)
 }
 
-task autogen {}
-autogen.dependsOn(preprocess)
+task strip(type: StripTask) {
 
-build.dependsOn(autogen)
+}
+
+task generate() {
+
+}
+preprocess.dependsOn(mkdirs)
+strip.dependsOn(preprocess)
+generate.dependsOn(strip)
+build.dependsOn(generate)

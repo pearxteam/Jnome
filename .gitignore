@@ -6,3 +6,12 @@ build
 classes
 .idea
 out
+
+buildSrc/.gradle
+buildSrc/build
+buildSrc/*.ipr
+buildSrc/*.iml
+buildSrc/*.iws
+buildSrc/classes
+buildSrc/.idea
+buildSrc/out
