@@ -35,6 +35,9 @@ sourceSets {
 }
 
 File autogen = file("$buildDir/autogen")
+File preprocessed = file("$autogen/preprocessed.h")
+File stripped = file("$autogen/stripped.h")
+List<String> includes = new JsonSlurper().parseText(preprocessing_include_directories)
 
 task mkdirs() {
     autogen.mkdirs()
@@ -43,19 +46,20 @@ task mkdirs() {
 task preprocess(type: Exec) {
     setExecutable(gcc_executable)
     List<String> args = ["-E", "${preprocessing_input_file}"];
-    List<String> incls = new JsonSlurper().parseText(preprocessing_include_directories)
-    for(String s : incls)
+    for(String s : includes)
     {
         args.add("-I")
         args.add("${s}")
     }
     args.add("-o")
-    args.add("$autogen/preprocessed.h")
+    args.add(preprocessed.toString())
     setArgs(args)
 }
 
 task strip(type: StripTask) {
-
+    input = preprocessed
+    output = stripped
+    whitelistFiles = includes
 }
 
 task generate() {

@@ -13,10 +13,39 @@ class StripTask extends DefaultTask
 {
     File input
     File output
+    List<String> whitelistFiles
 
     @TaskAction
     def strip()
     {
-        println "testhaha"
+        new FileWriter(output.toString(), true).withCloseable { wr ->
+            boolean pass = false
+            input.eachLine { line ->
+                if(line.startsWith("# "))
+                {
+                    String[] vals = line.substring(2).split(" ")
+                    String file = vals[1]
+                    if(file.startsWith("\""))
+                        file = file.substring(1, file.length() - 1)
+                    pass = filter(file)
+                }
+                if(pass)
+                {
+                    wr.write(line)
+                    wr.write("\n")
+                }
+                else logger.debug("Stripping line " + line)
+            }
+        }
+    }
+
+    boolean filter(String s)
+    {
+        for(String wl : whitelistFiles)
+        {
+            if(s.startsWith(wl))
+                return true
+        }
+        return false
     }
 }
