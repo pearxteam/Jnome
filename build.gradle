@@ -1,0 +1,41 @@
+import groovy.json.JsonSlurper
+
+group 'ru.pearx.jnome'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+}
+sourceSets {
+    autogen {
+        java {
+            srcDir "src/autogen/java"
+        }
+    }
+}
+
+task autogen(type: Exec) {
+    setExecutable(gcc_executable)
+    List<String> args = ["-E", "${preprocessing_input_file}"];
+    List<String> incls = new JsonSlurper().parseText(preprocessing_include_directories)
+    for(String s : incls)
+    {
+        args.add("-I")
+        args.add("${s}")
+    }
+    File dir = file("$buildDir/autogen")
+    dir.mkdirs()
+    args.add("-o")
+    args.add("$dir/out.h")
+    setArgs(args)
+}
+
+build.dependsOn(autogen)
