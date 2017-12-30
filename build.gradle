@@ -1,4 +1,5 @@
 import groovy.json.JsonSlurper
+import ru.pearx.jnome.generator.tasks.GenerateTask
 import ru.pearx.jnome.generator.tasks.StripTask
 
 /*buildscript {
@@ -37,6 +38,7 @@ sourceSets {
 File autogen = file("$buildDir/autogen")
 File preprocessed = file("$autogen/preprocessed.h")
 File stripped = file("$autogen/stripped.h")
+File generatedDir = file("$autogen/generated")
 List<String> includes = new JsonSlurper().parseText(preprocessing_include_directories)
 
 task mkdirs() {
@@ -62,8 +64,9 @@ task strip(type: StripTask) {
     whitelistFiles = includes
 }
 
-task generate() {
-
+task generate(type: GenerateTask) {
+    inputFile stripped
+    outputDir generatedDir
 }
 preprocess.dependsOn(mkdirs)
 strip.dependsOn(preprocess)

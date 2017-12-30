@@ -4,6 +4,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.AbstractCopyTask
 import org.gradle.api.tasks.TaskAction
+import ru.pearx.jnome.generator.Generator
 
 /*
  * Created by mrAppleXZ on 29.12.17 15:20.
@@ -23,11 +24,7 @@ class StripTask extends DefaultTask
             input.eachLine { line ->
                 if(line.startsWith("# "))
                 {
-                    String[] vals = line.substring(2).split(" ")
-                    String file = vals[1]
-                    if(file.startsWith("\""))
-                        file = file.substring(1, file.length() - 1)
-                    pass = filter(file)
+                    pass = filter(Generator.parseFile(line))
                 }
                 if(pass)
                 {
